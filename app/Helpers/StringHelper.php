@@ -2,35 +2,16 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\DB;
-
 class StringHelper
 {
     /**
-     * Build a query based on the array that contains column names.
+     * Test if string is null or whitespace.
      *
-     * @param  array  $array
-     * @return string
+     * @param  mixed $text
+     * @return bool
      */
-    public static function buildQuery(array $array, string $searchTerm)
+    public static function isNullOrWhitespace($text): bool
     {
-        $first = true;
-        $queryString = '';
-        $searchTerms = explode(' ', $searchTerm);
-
-        foreach ($searchTerms as $searchTerm) {
-            $searchTerm = DB::connection()->getPdo()->quote('%'.$searchTerm.'%');
-
-            foreach ($array as $column) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $queryString .= ' or ';
-                }
-                $queryString .= $column.' LIKE '.$searchTerm;
-            }
-        }
-
-        return $queryString;
+        return ctype_space($text) || $text === '' || is_null($text);
     }
 }

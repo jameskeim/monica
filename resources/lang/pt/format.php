@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
 
     /*
@@ -21,6 +27,7 @@ return [
     'short_month' => 'M',
     'short_month_year' => 'M Y',
     'short_day' => 'D',
+    'full_date_year' => 'd M Y',
     'full_month' => 'F',
     'full_month_year' => 'F Y',
     'full_hour' => 'H:i',

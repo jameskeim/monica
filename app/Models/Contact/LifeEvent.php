@@ -73,6 +73,8 @@ class LifeEvent extends Model
 
     /**
      * Get the life event type record associated with the life event.
+     *
+     * @return BelongsTo
      */
     public function lifeEventType()
     {
@@ -81,29 +83,11 @@ class LifeEvent extends Model
 
     /**
      * Get the reminder record associated with the life event.
+     *
+     * @return BelongsTo
      */
     public function reminder()
     {
         return $this->belongsTo(Reminder::class);
-    }
-
-    /**
-     * Get the life event name's attribute.
-     *
-     * @return string
-     */
-    public function getNameAttribute($value)
-    {
-        return $value;
-    }
-
-    /**
-     * Get the life event note's attribute.
-     *
-     * @return string
-     */
-    public function getNoteAttribute($value)
-    {
-        return $value;
     }
 }

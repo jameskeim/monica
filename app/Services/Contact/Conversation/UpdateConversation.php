@@ -24,7 +24,7 @@ class UpdateConversation extends BaseService
             'account_id' => 'required|integer|exists:accounts,id',
             'happened_at' => 'required|date',
             'contact_field_type_id' => 'required|integer',
-            'conversation_id' => 'required|integer',
+            'conversation_id' => 'required|integer|exists:conversations,id',
         ];
     }
 
@@ -38,6 +38,7 @@ class UpdateConversation extends BaseService
     {
         $this->validate($data);
 
+        /** @var Conversation */
         $conversation = Conversation::where('account_id', $data['account_id'])
                                     ->findOrFail($data['conversation_id']);
 

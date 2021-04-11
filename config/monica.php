@@ -12,9 +12,9 @@ return [
     | bad things will happen.
     |
     */
-    'app_version' => '2.14.0',
+    'app_version' => trim(is_file(__DIR__.'/.version') ? file_get_contents(__DIR__.'/.version') : (is_dir(__DIR__.'/../.git') ? exec('git describe --abbrev=0 --tags') : ''), 'v \t\n\r'),
 
-   /*
+    /*
     |--------------------------------------------------------------------------
     | Disable User registration
     |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ return [
     */
     'disable_signup' => env('APP_DISABLE_SIGNUP', false),
 
-   /*
+    /*
     |--------------------------------------------------------------------------
     | Activate double optin on signup
     |--------------------------------------------------------------------------
@@ -116,21 +116,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Specific to the official Monica mobile application
-    |--------------------------------------------------------------------------
-    |
-    | We need to pass a specific client ID and client secret that only the
-    | official mobile application can access - in order to protect the privacy
-    | of the instance (which has a lot of data).
-    | You can check what we do with this data on the mobile application on the
-    | official repository: https://github.com/monicahq/chandler.
-    |
-    */
-    'mobile_client_id' => env('MOBILE_CLIENT_ID', null),
-    'mobile_client_secret' => env('MOBILE_CLIENT_SECRET', null),
-
-    /*
-    |--------------------------------------------------------------------------
     | Access to paid features
     |--------------------------------------------------------------------------
     |
@@ -140,7 +125,7 @@ return [
     |
     | Available Settings: true, false
     |
-     */
+    */
     'requires_subscription' => env('REQUIRES_SUBSCRIPTION', false),
 
     /*
@@ -153,7 +138,7 @@ return [
     | the `unlock_paid_features` above.
     |
     |
-     */
+    */
     'paid_plan_monthly_friendly_name' => env('PAID_PLAN_MONTHLY_FRIENDLY_NAME', null),
     'paid_plan_monthly_id' => env('PAID_PLAN_MONTHLY_ID', null),
     'paid_plan_monthly_price' => env('PAID_PLAN_MONTHLY_PRICE', null),
@@ -168,8 +153,18 @@ return [
     |
     | This value determines the number of contacts allowed on a free account.
     |
-     */
+    */
     'number_of_allowed_contacts_free_account' => env('NUMBER_OF_ALLOWED_CONTACTS_FREE_ACCOUNT', 10),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Number of contacts to paginate
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the number of contacts to paginate on the contacts page by default.
+    |
+     */
+    'number_of_contacts_pagination' => env('NUMBER_OF_CONTACTS_PAGINATION', 30),
 
     /*
     |--------------------------------------------------------------------------
@@ -179,7 +174,7 @@ return [
     | This value will be the email address used in the footer of the application
     | to contact support.
     |
-     */
+    */
     'support_email_address' => env('SUPPORT_EMAIL_ADDRESS', 'support@monicahq.com'),
 
     /*
@@ -190,7 +185,7 @@ return [
     | This value determines the twitter account shown in case of maintenance in
     | progress.
     |
-     */
+    */
     'twitter_account' => env('SUPPORT_TWITTER', 'monicaHQ_app'),
 
     /*
@@ -200,7 +195,7 @@ return [
     |
     | This value determines the maximum size when uploading a file, in kilobytes.
     |
-     */
+    */
     'max_upload_size' => env('DEFAULT_MAX_UPLOAD_SIZE', 10240),
 
     /*
@@ -210,7 +205,7 @@ return [
     |
     | This the default limit for each new account. Default value: 512Mb.
     |
-     */
+    */
     'max_storage_size' => env('DEFAULT_MAX_STORAGE_SIZE', 512),
 
     /*
@@ -223,7 +218,7 @@ return [
     | If you do enable geolocation, you also need to provide a geolocation
     | api key as shown below.
     |
-     */
+    */
     'enable_geolocation' => env('ENABLE_GEOLOCATION', false),
 
     /*
@@ -236,7 +231,7 @@ return [
     | want to give anything to Google, ever.
     | LocationIQ offers 10,000 free requests per day.
     |
-     */
+    */
     'location_iq_api_key' => env('LOCATION_IQ_API_KEY', null),
 
     /*
@@ -246,7 +241,7 @@ return [
     |
     | Geolocation needs to be enabled for this feature to work. We need to it
     | to translate addresses to long/latitude coordinates.
-     */
+    */
     'enable_weather' => env('ENABLE_WEATHER', false),
 
     /*
@@ -257,6 +252,28 @@ return [
     | To provide weather information, we use Darksky.
     | Darksky provides an api with 1000 free API calls per day.
     | https://darksky.net/dev/register
-     */
+    */
     'darksky_api_key' => env('DARKSKY_API_KEY', null),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default avatar size
+    |--------------------------------------------------------------------------
+    |
+    | The default avatar size.
+    */
+    'avatar_size' => 200,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default adorable api url
+    |--------------------------------------------------------------------------
+    |
+    | The default adorable api url.
+    |
+    | You can host your own version, see https://github.com/itsthatguy/avatars-api-middleware
+    | or https://hub.docker.com/r/aldrio/adorable-avatars.
+    */
+    'adorable_api' => env('ADORABLE_API', 'https://api.hello-avatar.com/adorables/'),
+
 ];

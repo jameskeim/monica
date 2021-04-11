@@ -23,9 +23,9 @@ class UpdateMessage extends BaseService
     {
         return [
             'account_id' => 'required|integer|exists:accounts,id',
-            'contact_id' => 'required|integer',
-            'conversation_id' => 'required|integer',
-            'message_id' => 'required|integer',
+            'contact_id' => 'required|integer|exists:contacts,id',
+            'conversation_id' => 'required|integer|exists:conversations,id',
+            'message_id' => 'required|integer|exists:messages,id',
             'written_at' => 'required|date',
             'written_by_me' => 'required|boolean',
             'content' => 'required|string',
@@ -49,6 +49,7 @@ class UpdateMessage extends BaseService
                     ->where('account_id', $data['account_id'])
                     ->findOrFail($data['conversation_id']);
 
+        /** @var Message */
         $message = Message::where('contact_id', $data['contact_id'])
                             ->where('conversation_id', $data['conversation_id'])
                             ->where('account_id', $data['account_id'])

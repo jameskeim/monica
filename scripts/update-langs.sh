@@ -10,10 +10,12 @@ git checkout master
 git branch -D $l10nbranch || true
 git branch -D $origin/$l10nbranch || true
 git branch -D $newbranch || true
+git branch -D $origin/$newbranch || true
 
 # Create new branch
 git fetch $origin
-git checkout -b $newbranch $origin/$l10nbranch
+git checkout --track $origin/$l10nbranch
+git checkout -b $newbranch
 
 # Merge from master
 git merge $origin/master
@@ -24,4 +26,7 @@ git add public/js/langs/*.json
 git commit -m "Update jsons"
 
 # Push it to remote
-git push $origin $newbranch
+git push --set-upstream $origin $newbranch
+
+# Create Pull Request
+gh pr create --base master --title "chore(i18n): update translations" --label "auto-squash" --body ""

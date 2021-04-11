@@ -4,6 +4,9 @@ namespace App\Helpers;
 
 use function Safe\json_decode;
 use App\Models\Account\Account;
+use App\Models\Instance\Instance;
+use App\Models\Settings\Currency;
+use Illuminate\Support\Facades\DB;
 use function Safe\file_get_contents;
 
 class InstanceHelper
@@ -24,18 +27,23 @@ class InstanceHelper
      * @param  string $timePeriod  Accepted values: 'monthly', 'annual'
      * @return array|null
      */
-    public static function getPlanInformationFromConfig(string $timePeriod)
+    public static function getPlanInformationFromConfig(string $timePeriod): ?array
     {
+        $timePeriod = strtolower($timePeriod);
+
         if ($timePeriod != 'monthly' && $timePeriod != 'annual') {
-            return;
+            return null;
         }
+
+        $currency = Currency::where('iso', strtoupper(config('cashier.currency')))->first();
+        $amount = MoneyHelper::format(config('monica.paid_plan_'.$timePeriod.'_price'), $currency);
 
         return [
             'type' => $timePeriod,
             'name' => config('monica.paid_plan_'.$timePeriod.'_friendly_name'),
             'id' => config('monica.paid_plan_'.$timePeriod.'_id'),
             'price' => config('monica.paid_plan_'.$timePeriod.'_price'),
-            'friendlyPrice' => config('monica.paid_plan_'.$timePeriod.'_price') / 100,
+            'friendlyPrice' => $amount,
         ];
     }
 
@@ -55,5 +63,15 @@ class InstanceHelper
         }
 
         return $changelogs;
+    }
+
+    /**
+     * Check if the instance has at least one account.
+     *
+     * @return bool
+     */
+    public static function hasAtLeastOneAccount(): bool
+    {
+        return DB::table('accounts')->count() > 0;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Relationship;
 
+use App\Helpers\AccountHelper;
 use App\Models\Contact\Gender;
 use App\Models\Account\Account;
 use App\Models\Contact\Contact;
@@ -51,7 +52,7 @@ class RelationshipType extends Model
     /**
      * Get the reverser relationship type of this one.
      *
-     * @return self
+     * @return self|null
      */
     public function reverseRelationshipType()
     {
@@ -71,7 +72,8 @@ class RelationshipType extends Model
      */
     public function getLocalizedName(Contact $contact = null, bool $includeOpposite = false, string $gender = null)
     {
-        $defaultGender = $this->account->defaultGender();
+        $defaultGender = AccountHelper::getDefaultGender($this->account);
+
         if (is_null($gender)) {
             $gender = $defaultGender;
         }

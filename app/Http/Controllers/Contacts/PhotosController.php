@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\JsonRespondController;
 use App\Services\Account\Photo\UploadPhoto;
 use App\Services\Account\Photo\DestroyPhoto;
+use App\Services\Contact\Avatar\UpdateAvatar;
 use App\Http\Resources\Photo\Photo as PhotoResource;
 
 class PhotosController extends Controller
@@ -40,11 +41,10 @@ class PhotosController extends Controller
     public function store(Request $request, Contact $contact): PhotoResource
     {
         $photo = app(UploadPhoto::class)->execute([
-            'account_id' => auth()->user()->account->id,
+            'account_id' => auth()->user()->account_id,
+            'contact_id' => $contact->id,
             'photo' => $request->photo,
         ]);
-
-        $contact->photos()->syncWithoutDetaching([$photo->id]);
 
         return new PhotoResource($photo);
     }
@@ -63,7 +63,7 @@ class PhotosController extends Controller
     public function destroy(Request $request, Contact $contact, Photo $photo)
     {
         $data = [
-            'account_id' => auth()->user()->account->id,
+            'account_id' => auth()->user()->account_id,
             'photo_id' => $photo->id,
         ];
 
@@ -72,5 +72,16 @@ class PhotosController extends Controller
         } catch (\Exception $e) {
             return $this->respondNotFound();
         }
+
+        if ($contact->avatar_source == 'photo'
+            && $contact->avatar_photo_id == $photo->id) {
+            app(UpdateAvatar::class)->execute([
+                'account_id' => auth()->user()->account_id,
+                'contact_id' => $contact->id,
+                'source' => 'adorable',
+            ]);
+        }
+
+        return $this->respondObjectDeleted($photo->id);
     }
 }

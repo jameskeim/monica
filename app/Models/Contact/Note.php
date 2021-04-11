@@ -2,7 +2,6 @@
 
 namespace App\Models\Contact;
 
-use Parsedown;
 use App\Helpers\DateHelper;
 use App\Models\Account\Account;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Account $account
  * @property Contact $contact
  * @property string $parsed_body
+ * @property string $body
+ * @property bool $is_favorited
+ * @property \Illuminate\Support\Carbon|null $favorited_at
  */
 class Note extends Model
 {
@@ -49,6 +51,14 @@ class Note extends Model
     ];
 
     /**
+     * Eager load with every note.
+     */
+    protected $with = [
+        'account',
+        'contact',
+    ];
+
+    /**
      * Get the account record associated with the note.
      *
      * @return BelongsTo
@@ -77,16 +87,6 @@ class Note extends Model
     public function scopeFavorited(Builder $query)
     {
         return $query->where('is_favorited', true);
-    }
-
-    /**
-     * Return the markdown parsed body.
-     *
-     * @return string
-     */
-    public function getParsedBodyAttribute()
-    {
-        return (new Parsedown())->text($this->body);
     }
 
     /**

@@ -1,52 +1,60 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
-    'yes' => 'Yes',
-    'no' => 'No',
+    'yes' => 'Sim',
+    'no' => 'Não',
     'update' => 'Atualizar',
     'save' => 'Salvar',
     'add' => 'Adicionar',
     'cancel' => 'Cancelar',
+    'confirm' => 'Confirm',
     'delete_confirm' => 'Sure?',
     'delete' => 'Deletar',
     'edit' => 'Editar',
     'upload' => 'Enviar',
-    'download' => 'Download',
-    'save_close' => 'Save and close',
+    'download' => 'Transferir',
+    'save_close' => 'Guardar e Fechar',
     'close' => 'Fechar',
     'copy' => 'Copy',
     'create' => 'Create',
     'remove' => 'Remover',
-    'revoke' => 'Revoke',
+    'revoke' => 'Revogar',
     'done' => 'Concluído',
     'back' => 'Back',
     'verify' => 'Verificar',
-    'for' => 'para',
     'new' => 'new',
-    'unknown' => 'Não sei',
+    'unknown' => 'I don’t know',
     'load_more' => 'Carregar mais',
     'loading' => 'A carregar...',
     'with' => 'com',
-    'days' => 'day|days',
-    'today' => 'today',
-    'yesterday' => 'yesterday',
+    'today' => 'hoje',
+    'yesterday' => 'ontem',
     'another_day' => 'another day',
-    'date' => 'Date',
+    'date' => 'Data',
     'type' => 'Type',
     'zoom' => 'Zoom',
     'upgrade' => 'Upgrade to unlock',
     'percent_uploaded' => '{percent}% uploaded',
-    'retry' => 'Retry',
+    'retry' => 'Tentar novamente',
+    'filter' => 'Filter the list',
+    'go_back' => 'Retroceder',
+    'file_selected' => '1 file selected...|{count} files selected...',
 
     'application_title' => 'Monica – personal relationship manager',
-    'application_description' => 'Monica is a tool to manage your interactions with your loved ones, friends and family.',
+    'application_description' => 'Monica is a tool to manage your interactions with your loved ones, friends, and family.',
     'application_og_title' => 'Have better relations with your loved ones. Free Online CRM for friends and family.',
 
-    'markdown_description' => 'Quer formatar seu texto? Suportamos Markdown para adicionar negrito, itálicas, listas e mais.',
+    'markdown_description' => 'Want to format your text nicely? We support Markdown to add bold, italic, lists, and more.',
     'markdown_link' => 'Ler a documentação',
 
     'header_settings_link' => 'Configurações',
-    'header_logout_link' => 'Sair',
+    'header_logout_link' => 'Logout',
     'header_changelog_link' => 'Product changes',
 
     'main_nav_cta' => 'Adicionar Pessoa',
@@ -96,23 +104,25 @@ return [
     'gender_male' => 'Homem',
     'gender_female' => 'Mulher',
     'gender_none' => 'Prefiro não dizer',
-    'gender_no_gender' => 'No gender',
+    'gender_no_gender' => 'Sem género',
 
     'error_title' => 'Ups! Algo correu mal.',
     'error_unauthorized' => 'Não tem permissões para editar este recurso.',
-    'error_save' => 'We had an error trying to save the data.',
+    'error_user_account' => 'This user does not belong to the given account.',
+    'error_save' => 'Ocorreu um erro ao guardar os dados.',
     'error_try_again' => 'Something went wrong. Please try again.',
     'error_id' => 'Error ID: :id',
-    'error_unavailable' => 'Service Unavailable',
+    'error_unavailable' => 'Service unavailable',
     'error_maintenance' => 'Maintenance in progress. Be right back.',
     'error_help' => 'We’ll be right back.',
     'error_twitter' => 'Follow <a href="https://twitter.com/:twitter">our Twitter account</a> to be alerted when it’s up again.',
+    'error_no_term' => 'There is no policy for this instance yet.',
 
-    'default_save_success' => 'The data has been saved.',
+    'default_save_success' => 'Os dados foram guardados.',
 
-    'compliance_title' => 'Sorry for the interruption.',
+    'compliance_title' => 'Pedimos desculpa pela interrupção.',
     'compliance_desc' => 'We have changed our <a href=":urlterm" hreflang=":hreflang">Terms of Use</a> and <a href=":url" hreflang=":hreflang">Privacy Policy</a>. By law we have to ask you to review them and accept them so you can continue to use your account.',
-    'compliance_desc_end' => 'We don’t do anything nasty with your data or account and will never do.',
+    'compliance_desc_end' => 'We don’t do anything nasty with your data or your account and we never will.',
     'compliance_terms' => 'Accept new terms and privacy policy',
 
     // Relationship types
@@ -122,14 +132,14 @@ return [
     // and then, the feminine version of the string. Finally, in some sentences
     // in the UI, we need to include the name of the person we add the relationship
     // to.
-    'relationship_type_group_love' => 'Love relationships',
-    'relationship_type_group_family' => 'Family relationships',
-    'relationship_type_group_friend' => 'Friend relationships',
-    'relationship_type_group_work' => 'Work relationships',
+    'relationship_type_group_love' => 'Relações amorosas',
+    'relationship_type_group_family' => 'Relações familiares',
+    'relationship_type_group_friend' => 'Relações de amizade',
+    'relationship_type_group_work' => 'Relações laborais',
     'relationship_type_group_other' => 'Other kind of relationships',
 
-    'relationship_type_partner' => 'significant other',
-    'relationship_type_partner_female' => 'significant other',
+    'relationship_type_partner' => 'companheiro',
+    'relationship_type_partner_female' => 'companheira',
     'relationship_type_partner_with_name' => ':name’s significant other',
     'relationship_type_partner_female_with_name' => ':name’s significant other',
 
@@ -172,6 +182,16 @@ return [
     'relationship_type_child_female' => 'daughter',
     'relationship_type_child_with_name' => ':name’s son',
     'relationship_type_child_female_with_name' => ':name’s daughter',
+
+    'relationship_type_stepparent' => 'stepfather',
+    'relationship_type_stepparent_female' => 'stepmother',
+    'relationship_type_stepparent_with_name' => ':name’s stepfather',
+    'relationship_type_stepparent_female_with_name' => ':name’s stepmother',
+
+    'relationship_type_stepchild' => 'stepson',
+    'relationship_type_stepchild_female' => 'stepdaughter',
+    'relationship_type_stepchild_with_name' => ':name’s stepson',
+    'relationship_type_stepchild_female_with_name' => ':name’s stepdaughter',
 
     'relationship_type_sibling' => 'brother',
     'relationship_type_sibling_female' => 'sister',
@@ -248,10 +268,10 @@ return [
     'relationship_type_protege_with_name' => ':name’s protege',
     'relationship_type_protege_female_with_name' => ':name’s protege',
 
-    'relationship_type_ex_husband' => 'ex husband',
-    'relationship_type_ex_husband_female' => 'ex wife',
-    'relationship_type_ex_husband_with_name' => ':name’s ex husband',
-    'relationship_type_ex_husband_female_with_name' => ':name’s ex wife',
+    'relationship_type_ex_husband' => 'ex-husband',
+    'relationship_type_ex_husband_female' => 'ex-wife',
+    'relationship_type_ex_husband_with_name' => ':name’s ex-husband',
+    'relationship_type_ex_husband_female_with_name' => ':name’s ex-wife',
 
     // emotions
     'emotion_primary_love' => 'Love',
@@ -442,4 +462,10 @@ return [
     'dav_birthdays_description' => ':name’s contact’s birthdays',
     'dav_tasks' => 'Tasks',
     'dav_tasks_description' => ':name’s tasks',
+
+    // contact list
+    'contact_list_avatar' => 'Avatar',
+    'contact_list_name' => 'Contact',
+    'contact_list_description' => 'Description',
+
 ];

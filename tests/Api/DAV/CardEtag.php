@@ -25,6 +25,7 @@ trait CardEtag
 
     protected function getCard(Contact $contact, bool $realFormat = false): string
     {
+        $contact = $contact->refresh();
         $url = route('people.show', $contact);
         $sabreversion = \Sabre\VObject\Version::VERSION;
         $timestamp = $contact->updated_at->format('Ymd\THis\Z');
@@ -36,8 +37,18 @@ UID:{$contact->uuid}
 SOURCE:{$url}
 FN:{$contact->name}
 N:{$contact->last_name};{$contact->first_name};{$contact->middle_name};;
-GENDER:{$contact->gender->type}
 ";
+
+        if ($contact->gender) {
+            $data .= "GENDER:{$contact->gender->type}";
+            $data .= "\n";
+        }
+
+        $picture = $contact->getAvatarURL();
+        if (! empty($picture)) {
+            $data .= "PHOTO;VALUE=URI:{$picture}\n";
+        }
+
         foreach ($contact->addresses as $address) {
             $data .= 'ADR:;;';
             $data .= $address->place->street.';';
@@ -48,20 +59,29 @@ GENDER:{$contact->gender->type}
             $data .= "\n";
         }
         foreach ($contact->contactFields as $contactField) {
+            $type = '';
+            if ($contactField->labels->count() > 0) {
+                $type = ';TYPE='.$contactField->labels->map(function ($label) {
+                    return $label->label_i18n ?: $label->label;
+                })->join(',');
+            }
             switch ($contactField->contactFieldType->type) {
                 case ContactFieldType::PHONE:
-                    $data .= "TEL:{$contactField->data}\n";
+                    $data .= "TEL$type:{$contactField->data}\n";
                     break;
                 case ContactFieldType::EMAIL:
-                    $data .= "EMAIL:{$contactField->data}\n";
+                    $data .= "EMAIL$type:{$contactField->data}\n";
                     break;
                 default:
                     break;
             }
         }
-        $data .= "REV:{$timestamp}
-END:VCARD
-";
+        $data .= "REV:{$timestamp}\n";
+        $tags = $contact->getTagsAsString();
+        if (! empty($tags)) {
+            $data .= "CATEGORIES:{$tags}\n";
+        }
+        $data .= "END:VCARD\n";
 
         if ($realFormat) {
             $data = mb_ereg_replace("\n", "\r\n", $data);

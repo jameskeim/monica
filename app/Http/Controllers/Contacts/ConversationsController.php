@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use App\Models\Contact\Conversation;
 use App\Traits\JsonRespondController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use App\Services\Contact\Conversation\DestroyMessage;
 use App\Services\Contact\Conversation\CreateConversation;
 use App\Services\Contact\Conversation\UpdateConversation;
@@ -71,26 +73,24 @@ class ConversationsController extends Controller
      */
     public function store(Request $request, Contact $contact)
     {
-        // find out what the date is
-        $chosenDate = $request->get('conversationDateRadio');
-        if ($chosenDate == 'today') {
-            $date = now()->format('Y-m-d');
-        } elseif ($chosenDate == 'yesterday') {
-            $date = now()->subDay()->format('Y-m-d');
-        } else {
-            $date = $request->get('conversationDate');
+        $data = $this->validateAndGetDatas($request);
+
+        if ($data instanceof \Illuminate\Contracts\Validation\Validator) {
+            return back()
+                ->withInput()
+                ->withErrors($data);
         }
 
-        $data = [
-            'happened_at' => $date,
-            'account_id' => auth()->user()->account->id,
-            'contact_id' => $contact->id,
-            'contact_field_type_id' => $request->get('contactFieldTypeId'),
-        ];
+        $date = $data['happened_at'];
+        $data['contact_id'] = $contact->id;
 
         // create the conversation
         try {
             $conversation = app(CreateConversation::class)->execute($data);
+        } catch (ValidationException $e) {
+            return back()
+                ->withInput()
+                ->withErrors($e->validator);
         } catch (\Exception $e) {
             return back()
                 ->withInput()
@@ -98,24 +98,11 @@ class ConversationsController extends Controller
         }
 
         // add the messages to the conversation
-        $messages = explode(',', $request->get('messages'));
-        foreach ($messages as $messageId) {
-            $data = [
-                'account_id' => auth()->user()->account->id,
-                'conversation_id' => $conversation->id,
-                'contact_id' => $conversation->contact->id,
-                'written_at' => $date,
-                'written_by_me' => ($request->get('who_wrote_'.$messageId) == 'me'),
-                'content' => $request->get('content_'.$messageId),
-            ];
-
-            try {
-                app(AddMessageToConversation::class)->execute($data);
-            } catch (\Exception $e) {
-                return back()
-                    ->withInput()
-                    ->withErrors(trans('app.error_save'));
-            }
+        $result = $this->updateMessages($request, $conversation, $date);
+        if ($result !== true) {
+            return back()
+                ->withInput()
+                ->withErrors($result);
         }
 
         return redirect()->route('people.show', $contact)
@@ -159,26 +146,24 @@ class ConversationsController extends Controller
      */
     public function update(Request $request, Contact $contact, Conversation $conversation)
     {
-        // find out what the date is
-        $chosenDate = $request->get('conversationDateRadio');
-        if ($chosenDate == 'today') {
-            $date = now()->format('Y-m-d');
-        } elseif ($chosenDate == 'yesterday') {
-            $date = now()->subDay()->format('Y-m-d');
-        } else {
-            $date = $request->get('conversationDate');
+        $data = $this->validateAndGetDatas($request);
+
+        if ($data instanceof \Illuminate\Contracts\Validation\Validator) {
+            return back()
+                ->withInput()
+                ->withErrors($data);
         }
 
-        $data = [
-            'happened_at' => $date,
-            'account_id' => auth()->user()->account->id,
-            'conversation_id' => $conversation->id,
-            'contact_field_type_id' => $request->get('contactFieldTypeId'),
-        ];
+        $date = $data['happened_at'];
+        $data['conversation_id'] = $conversation->id;
 
         // update the conversation
         try {
             $conversation = app(UpdateConversation::class)->execute($data);
+        } catch (ValidationException $e) {
+            return back()
+                ->withInput()
+                ->withErrors($e->validator);
         } catch (\Exception $e) {
             return back()
                 ->withInput()
@@ -188,7 +173,7 @@ class ConversationsController extends Controller
         // delete all current messages
         foreach ($conversation->messages as $message) {
             $data = [
-                'account_id' => auth()->user()->account->id,
+                'account_id' => auth()->user()->account_id,
                 'conversation_id' => $conversation->id,
                 'message_id' => $message->id,
             ];
@@ -196,28 +181,86 @@ class ConversationsController extends Controller
         }
 
         // and create all new ones
-        $messages = explode(',', $request->get('messages'));
-        foreach ($messages as $messageId) {
-            $data = [
-                'account_id' => auth()->user()->account->id,
-                'conversation_id' => $conversation->id,
-                'contact_id' => $conversation->contact->id,
-                'written_at' => $date,
-                'written_by_me' => ($request->get('who_wrote_'.$messageId) == 'me'),
-                'content' => $request->get('content_'.$messageId),
-            ];
-
-            try {
-                app(AddMessageToConversation::class)->execute($data);
-            } catch (\Exception $e) {
-                return back()
-                    ->withInput()
-                    ->withErrors(trans('app.error_save'));
-            }
+        $result = $this->updateMessages($request, $conversation, $date);
+        if ($result !== true) {
+            return back()
+                ->withInput()
+                ->withErrors($result);
         }
 
         return redirect()->route('people.show', $contact)
             ->with('success', trans('people.conversation_edit_success'));
+    }
+
+    /**
+     * Validate datas and get an array for create or update a conversation.
+     *
+     * @param Request $request
+     * @return array|\Illuminate\Contracts\Validation\Validator
+     */
+    private function validateAndGetDatas(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'conversationDateRadio' => 'required',
+            'conversationDate' => 'required_unless:conversationDateRadio,today,yesterday',
+            'messages' => 'required',
+            'contactFieldTypeId' => 'required|integer|exists:contact_field_types,id',
+        ], [
+            'messages.required' => trans('people.conversation_add_error'),
+        ]);
+
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // find out what the date is
+        $chosenDate = $request->input('conversationDateRadio');
+        if ($chosenDate == 'today') {
+            $date = DateHelper::getDate(now());
+        } elseif ($chosenDate == 'yesterday') {
+            $date = DateHelper::getDate(now()->subDay());
+        } else {
+            $date = $request->input('conversationDate');
+        }
+
+        return [
+            'account_id' => auth()->user()->account_id,
+            'happened_at' => $date,
+            'contact_field_type_id' => $request->input('contactFieldTypeId'),
+        ];
+    }
+
+    /**
+     * Update messages for conversation.
+     *
+     * @param Request $request
+     * @param Conversation $conversation
+     * @param string $date
+     * @return bool|string|\Illuminate\Contracts\Validation\Validator
+     */
+    private function updateMessages(Request $request, Conversation $conversation, string $date)
+    {
+        $messages = explode(',', $request->input('messages'));
+        foreach ($messages as $messageId) {
+            $data = [
+                'account_id' => auth()->user()->account_id,
+                'conversation_id' => $conversation->id,
+                'contact_id' => $conversation->contact_id,
+                'written_at' => $date,
+                'written_by_me' => ($request->input('who_wrote_'.$messageId) === 'me'),
+                'content' => $request->input('content_'.$messageId),
+            ];
+
+            try {
+                app(AddMessageToConversation::class)->execute($data);
+            } catch (ValidationException $e) {
+                return $e->validator;
+            } catch (\Exception $e) {
+                return trans('app.error_save');
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -232,7 +275,7 @@ class ConversationsController extends Controller
     public function destroy(Request $request, Contact $contact, Conversation $conversation)
     {
         $data = [
-            'account_id' => auth()->user()->account->id,
+            'account_id' => auth()->user()->account_id,
             'conversation_id' => $conversation->id,
         ];
 

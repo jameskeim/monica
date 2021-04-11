@@ -14,6 +14,9 @@ use App\Models\ModelBindingHasherWithContact as Model;
  * A reminder has two states: active and inactive.
  * An inactive reminder is basically a one_time reminder that has already be
  * sent once and has been marked inactive so we don't schedule it again.
+ *
+ * @property string $next_expected_date_human_readable
+ * @property string $next_expected_date
  */
 class Reminder extends Model
 {
@@ -83,36 +86,6 @@ class Reminder extends Model
     public function scopeActive($query)
     {
         return $query->where('inactive', false);
-    }
-
-    /**
-     * Get the title of a reminder.
-     *
-     * @return string
-     */
-    public function getTitleAttribute($value)
-    {
-        return $value;
-    }
-
-    /**
-     * Set the title of a reminder.
-     *
-     * @return void
-     */
-    public function setTitleAttribute($title): void
-    {
-        $this->attributes['title'] = $title;
-    }
-
-    /**
-     * Get the description of a reminder.
-     *
-     * @return string
-     */
-    public function getDescriptionAttribute($value)
-    {
-        return $value;
     }
 
     /**

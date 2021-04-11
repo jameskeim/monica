@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * ⚠️ Editing not allowed except for 'en' language.
+ *
+ * @see https://github.com/monicahq/monica/blob/master/docs/contribute/translate.md for translations.
+ */
+
 return [
     'yes' => 'Oui',
     'no' => 'Non',
@@ -7,6 +13,7 @@ return [
     'save' => 'Sauver',
     'add' => 'Ajouter',
     'cancel' => 'Annuler',
+    'confirm' => 'Confirmer',
     'delete_confirm' => 'Êtes-vous sûr ?',
     'delete' => 'Supprimer',
     'edit' => 'Éditer',
@@ -21,22 +28,23 @@ return [
     'done' => 'Terminé',
     'back' => 'Précédent',
     'verify' => 'Vérifier',
-    'for' => 'pour',
     'new' => 'nouveau',
     'unknown' => 'Je ne sais pas',
     'load_more' => 'Charger plus',
     'loading' => 'Chargement...',
     'with' => 'avec',
-    'days' => 'jour|jour|jours',
-    'today' => 'aujourd\'hui',
+    'today' => 'aujourd’hui',
     'yesterday' => 'hier',
     'another_day' => 'un autre jour',
     'date' => 'Date',
     'type' => 'Type',
     'zoom' => 'Zoom',
     'upgrade' => 'Mettre à jour pour débloquer',
-    'percent_uploaded' => '{percent}% téléchargé',
+    'percent_uploaded' => '{percent}% téléchargés',
     'retry' => 'Réessayer',
+    'filter' => 'Filtrer la liste',
+    'go_back' => 'Revenir en arrière',
+    'file_selected' => '{count} fichier sélectionné...|{count} fichiers sélectionnés...',
 
     'application_title' => 'Monica – gestionnaire de relations personnelles',
     'application_description' => 'Monica est un outil pour gérer vos interactions avec vos proches, vos amis et votre famille.',
@@ -100,13 +108,15 @@ return [
 
     'error_title' => 'Oups ! Une erreur est survenue.',
     'error_unauthorized' => 'Vous n’avez pas le droit de modifier cette ressource.',
+    'error_user_account' => 'Cet utilisateur n’appartient pas au compte donné.',
     'error_save' => 'Une erreur est intervenue pendant la sauvegarde des données.',
     'error_try_again' => 'Une erreur s’est produite. Merci d’essayer à nouveau.',
     'error_id' => 'Erreur numéro : :id',
-    'error_unavailable' => 'Service non disponible',
+    'error_unavailable' => 'Service indisponible',
     'error_maintenance' => 'Maintenance en cours. On revient vite !',
     'error_help' => 'On revient tout de suite.',
     'error_twitter' => 'Suivez <a href="https://twitter.com/:twitter">notre compte Twitter</a> pour être alerté de l’évolution de la situation.',
+    'error_no_term' => 'Il n’y a pas encore de politique pour cette instance.',
 
     'default_save_success' => 'Les modifications ont été enregistrées.',
 
@@ -172,6 +182,16 @@ return [
     'relationship_type_child_female' => 'fille',
     'relationship_type_child_with_name' => 'fils de :name',
     'relationship_type_child_female_with_name' => 'fille de :name',
+
+    'relationship_type_stepparent' => 'beau père',
+    'relationship_type_stepparent_female' => 'belle mère',
+    'relationship_type_stepparent_with_name' => 'beau père de :name',
+    'relationship_type_stepparent_female_with_name' => 'belle mère de :name',
+
+    'relationship_type_stepchild' => 'beau fils',
+    'relationship_type_stepchild_female' => 'belle fille',
+    'relationship_type_stepchild_with_name' => 'beau fils de :name',
+    'relationship_type_stepchild_female_with_name' => 'belle fille de :name',
 
     'relationship_type_sibling' => 'frère',
     'relationship_type_sibling_female' => 'sœur',
@@ -358,7 +378,7 @@ return [
     'emotion_scorn' => 'Mépris',
     'emotion_spite' => 'Dépit',
     'emotion_vengefulness' => 'Vengeance',
-    'emotion_dislike' => 'Je n\'aime pas',
+    'emotion_dislike' => 'Désamour',
     'emotion_resentment' => 'Ressentiment',
     'emotion_disgust' => 'Dégoût',
     'emotion_revulsion' => 'Répulsion',
@@ -371,12 +391,12 @@ return [
     'emotion_anguish' => 'Angoisse',
     'emotion_depression' => 'Dépression',
     'emotion_despair' => 'Désespoir',
-    'emotion_hopelessness' => 'Désespoir',
-    'emotion_gloom' => 'Morosité',
-    'emotion_glumness' => 'Tristesse',
+    'emotion_hopelessness' => 'Désolation',
+    'emotion_gloom' => 'Désespérance',
+    'emotion_glumness' => 'Morose',
     'emotion_sadness' => 'Tristesse',
     'emotion_unhappiness' => 'Malheur',
-    'emotion_grief' => 'Chagrin',
+    'emotion_grief' => 'Afflicion',
     'emotion_sorrow' => 'Chagrin',
     'emotion_woe' => 'Malheur',
     'emotion_misery' => 'Misère',
@@ -429,8 +449,8 @@ return [
     'weather_wind' => 'Vent',
     'weather_fog' => 'Brouillard',
     'weather_cloudy' => 'Nuageux',
-    'weather_partly-cloudy-day' => 'Partiellement nuageux',
-    'weather_partly-cloudy-night' => 'Partiellement nuageux',
+    'weather_partly-cloudy-day' => 'Nuit partiellement nuageuse',
+    'weather_partly-cloudy-night' => 'Jour partiellement nuageux',
     'weather_current_temperature_celsius' => ':temperature °C',
     'weather_current_temperature_fahrenheit' => ':temperature °F',
     'weather_current_title' => 'Météo actuelle',
@@ -442,4 +462,10 @@ return [
     'dav_birthdays_description' => 'Anniversaires des contacts de :name',
     'dav_tasks' => 'Tâches',
     'dav_tasks_description' => 'Tâches de :name',
+
+    // contact list
+    'contact_list_avatar' => 'Avatar',
+    'contact_list_name' => 'Contact',
+    'contact_list_description' => 'Description',
+
 ];

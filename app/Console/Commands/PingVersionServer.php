@@ -54,7 +54,7 @@ class PingVersionServer extends Command
         $data = [
             'uuid' => $instance->uuid,
             'version' => $instance->current_version,
-            'contacts' => Contact::all()->count(),
+            'contacts' => Contact::count(),
         ];
 
         // Send the JSON
@@ -106,8 +106,6 @@ class PingVersionServer extends Command
 
     public function log($string)
     {
-        if ($this->getOutput()->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->info($string);
-        }
+        $this->info($string, OutputInterface::VERBOSITY_VERBOSE);
     }
 }
